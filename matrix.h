@@ -28,15 +28,9 @@ class Matrix
 {
 public:
 
-	Matrix();
-
-	Matrix (const Matrix &mat) {
-		memcpy(m, mat.data(), sizeof(float)*16);
-	}
-
-	Matrix (const float i[16]) {
-		memcpy(m, i, sizeof(float)*16);
-	}
+	Matrix(){}
+	Matrix (const Matrix &mat) {memcpy(m, mat.data(), sizeof(float)*16);}
+	Matrix (const float i[16]) {memcpy(m, i, sizeof(float)*16);}
 
 	void perspectiveLH( float width, float height, float znear, float zfar );
 	void perspectiveRH( float width, float height, float znear, float zfar );
@@ -84,7 +78,12 @@ public:
 	// equality comparison. doesn't modify object. therefore const.
 	bool operator==(const Matrix& mat) const;
 
-	float m[16];
+	float m[16] = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
 };
 
 } //ns MATH

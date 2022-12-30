@@ -26,16 +26,6 @@ float getCofactor(float m0, float m1, float m2,
 }
 
 
-Matrix::Matrix() :
-	m {
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f 
-	}
-{
-}
-
 float Matrix::determinant()
 {
 	return m[0] * getCofactor(m[5],m[6],m[7], m[9],m[10],m[11], m[13],m[14],m[15]) -
@@ -430,13 +420,12 @@ Matrix& Matrix::operator=(const float a[16])
 bool Matrix::operator==(const Matrix& mat) const
 {
 	const float *i = mat.data();
-	return
-			(
-					m[0]==i[0] && m[1]==i[1] && m[2]==i[2] && m[3]==i[3] &&
-					m[4]==i[4] && m[5]==i[5] && m[6]==i[6] && m[7]==i[7] &&
-					m[8]==i[8] && m[9]==i[9] && m[10]==i[10] && m[11]==i[11] &&
-					m[12]==i[12] && m[13]==i[13] && m[14]==i[14] && m[15]==i[15]
-			);
+	return (
+		m[0]==i[0] && m[1]==i[1] && m[2]==i[2] && m[3]==i[3] &&
+		m[4]==i[4] && m[5]==i[5] && m[6]==i[6] && m[7]==i[7] &&
+		m[8]==i[8] && m[9]==i[9] && m[10]==i[10] && m[11]==i[11] &&
+		m[12]==i[12] && m[13]==i[13] && m[14]==i[14] && m[15]==i[15]
+	);
 }
 
 
