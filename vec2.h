@@ -13,11 +13,8 @@ class vec2
 {
 public:
 	
-	inline vec2()
-	{
-        x = 0.0f;
-        y = 0.0f;
-	}
+	vec2(){};
+	~vec2(){};
 	
 	inline vec2(float _x, float _y) : x(_x), y(_y)
 	{
@@ -162,7 +159,7 @@ public:
         y = 0.0f;
     }
 	
-	float x, y;
+	float x=0, y=0;
 };
 
 inline vec2 operator * (float _m, const vec2 &_v)
