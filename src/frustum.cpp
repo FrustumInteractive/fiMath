@@ -1,5 +1,5 @@
-#include "math/frustum.h"
-#include "math/matrix.h"
+#include "fi/math/frustum.h"
+#include "fi/math/matrix.h"
 
 #include <math.h>
 #include <memory.h>								

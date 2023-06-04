@@ -7,7 +7,7 @@
  *
  */
 
-#include "math/plane.h"
+#include "fi/math/plane.h"
 
 using namespace FI;
 using namespace MATH;
