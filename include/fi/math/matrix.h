@@ -29,7 +29,7 @@ class Matrix
 public:
 
 	Matrix(){}
-	Matrix (const Matrix &mat) {memcpy(m, mat.data(), sizeof(float)*16);}
+	Matrix (const Matrix &mat) {memcpy(m, mat.m, sizeof(float)*16);}
 	Matrix (const float i[16]) {memcpy(m, i, sizeof(float)*16);}
 
 	void perspectiveLH( float width, float height, float znear, float zfar );
