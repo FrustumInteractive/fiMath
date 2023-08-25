@@ -12,6 +12,7 @@ using namespace MATH;
 
 //Helpers
 const float EPSILON = 0.00001f;
+const float DTOR = 0.0174532925f;
 
 // compute cofactor of 3x3 minor matrix without sign
 // input params are 9 elements of the minor matrix
@@ -294,6 +295,19 @@ void Matrix::scale( const vec3& s )
 	};
 
 	memcpy(m, i, sizeof(float)*16);
+}
+
+void Matrix::transform(vec3 trans, vec3 rot, vec3 scale)
+{
+	Matrix t,r,s, o;
+	t.translate(trans);
+	float angle = rot.length() * DTOR;
+	rot.normalize();
+	r.rotate(angle, rot);
+	s.scale(scale);
+
+	o = s*r*t;
+	memcpy(m, o.m, sizeof(float)*16);
 }
 
 void Matrix::identity()

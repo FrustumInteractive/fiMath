@@ -50,7 +50,8 @@ public:
 	void translate( float x, float y, float z );
 	void scale( const vec3& s );
 	void scale( float x, float y, float z );
-	
+	void transform(vec3 trans, vec3 rot = vec3(), vec3 scale = vec3(1,1,1)); // replace existing transform matrix; rotation in degrees
+
 	void identity();
 	void transpose();
 	void invert();
