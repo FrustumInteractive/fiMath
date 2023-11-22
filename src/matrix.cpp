@@ -299,14 +299,17 @@ void Matrix::scale( const vec3& s )
 
 void Matrix::transform(vec3 trans, vec3 rot, vec3 scale)
 {
-	Matrix t,r,s, o;
+	Matrix t, rx, ry, rz, s, o;
 	t.translate(trans);
-	float angle = rot.length() * DTOR;
-	rot.normalize();
-	r.rotate(angle, rot);
+	float angx = rot.x * DTOR;
+	float angy = rot.y * DTOR;
+	float angz = rot.z * DTOR;
+	rx.rotate(angx, vec3(1,0,0));
+	ry.rotate(angy, vec3(0,1,0));
+	rz.rotate(angz, vec3(0,0,1));
 	s.scale(scale);
 
-	o = s*r*t;
+	o = s*rx*ry*rz*t;
 	memcpy(m, o.m, sizeof(float)*16);
 }
 
