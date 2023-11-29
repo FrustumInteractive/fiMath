@@ -40,6 +40,8 @@ public:
 	void orthoRH( float width, float height, float znear, float zfar); // (0,0) at center
 	void orthoOffCenterLH( float left, float right, float bottom, float top, float znear, float zfar);
 	void orthoLH( float width, float height, float znear, float zfar); // (0,0) at center
+
+	void frustum(float left, float right, float bottom, float top, float near, float far); // describes a perspective matrix (projection matrix)
 	
 	void lookAtLH( const vec3& eye, const vec3& target, const vec3& up);
 	void lookAtRH( const vec3& eye, const vec3& target, const vec3& up);

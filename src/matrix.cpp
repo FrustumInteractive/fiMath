@@ -121,10 +121,10 @@ void Matrix::Matrix::perspectiveFovLH( float fovY, float aspect, float znear, fl
 
 	// the following looks like RM, but it's sequenced as CM
 	float i[16] = {
-		w, 					0, 					0, 					0,
-		0, 					h, 					0, 					0,
-		0, 					0, 					zfar/zfmzn,			1,
-		0,					0,					-znear*zfar/zfmzn,	0
+		w,			0,			0, 					0,
+		0,			h,			0, 					0,
+		0,			0,			zfar/zfmzn,			1,
+		0,			0,			-znear*zfar/zfmzn,	0
 	};
 
 	memcpy(m, i, sizeof(float)*16);
@@ -137,10 +137,34 @@ void Matrix::perspectiveFovRH( float fovY, float aspect, float zn, float zf )
 	float znmzf = zn-zf;
 	// the following looks like RM, but it's sequenced as CM
 	float i[16] = {
-		w, 					0, 					0, 					0,
-		0, 					h, 					0, 					0,
-		0, 					0, 					zf/znmzf,			-1,
-		0,					0,					zn*zf/znmzf,		0
+		w,		0,		0,				0,
+		0,		h,		0,				0,
+		0,		0,		zf/znmzf,		-1,
+		0,		0,		zn*zf/znmzf,	0
+	};
+
+	memcpy(m, i, sizeof(float)*16);
+}
+
+void Matrix::frustum(float left, float right, float bottom, float top, float near, float far)
+{
+	float rml = right - left;
+	float tmb = top - bottom;
+	float fmn = far - near;
+	float A = (right + left) / rml;
+	float B = (top + bottom) / tmb;
+	float C = -(far + near) / fmn;
+	float D = -(2.0f * far * near) / fmn;
+	float nx2 = 2.0f * near;
+
+	// https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml
+	// transposed to column major
+
+	float i[16] = {
+		nx2/rml,	0,			0,		0,
+		0,			nx2/tmb,	0,		0,
+		A,			B,			C,		-1,
+		0,			0,			D,		0
 	};
 
 	memcpy(m, i, sizeof(float)*16);
