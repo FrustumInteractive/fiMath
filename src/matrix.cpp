@@ -121,10 +121,10 @@ void Matrix::Matrix::perspectiveFovLH( float fovY, float aspect, float znear, fl
 
 	// the following looks like RM, but it's sequenced as CM
 	float i[16] = {
-		w,			0,			0, 					0,
-		0,			h,			0, 					0,
-		0,			0,			zfar/zfmzn,			1,
-		0,			0,			-znear*zfar/zfmzn,	0
+		w,  0,  0,                 0,
+		0,  h,  0,                 0,
+		0,  0,  zfar/zfmzn,        1,
+		0,  0, -znear*zfar/zfmzn,  0
 	};
 
 	memcpy(m, i, sizeof(float)*16);
@@ -173,10 +173,10 @@ void Matrix::frustum(float left, float right, float bottom, float top, float nea
 void Matrix::orthoLH( float w, float h, float zn, float zf) //row major?
 {
 	float i[16] = {
-		1/w,				0, 					0, 					0,
-		0, 					1/h,				0, 					0,
-		0, 					0, 					-2/(zf-zn),			zn/(zn-zf),
-		0,					0,					-(zf+zn)/(zf-zn),	1
+		1/w,  0,    0,                0,
+		0,    1/h,  0,                0,
+		0,    0,   -2/(zf-zn),        zn/(zn-zf),
+		0,    0,   -(zf+zn)/(zf-zn),  1
 	};
 
 	memcpy(m, i, sizeof(float)*16);;
@@ -185,10 +185,10 @@ void Matrix::orthoLH( float w, float h, float zn, float zf) //row major?
 void Matrix::orthoOffCenterLH( float l, float r, float b, float t, float zn, float zf)
 {
 	float i[16] = {
-		2.0f/(r-l),		0, 				0, 				0,
-		0, 				2.0f/(t-b),		0, 				0,
-		0, 				0, 				1.0f/(zf-zn),	0,
-		(l+r)/(l-r),	(t+b)/(b-t),	zn/(zn-zf),		1
+		2.0f/(r-l),  0,            0,             0,
+		0,           2.0f/(t-b),   0,             0,
+		0,           0,            1.0f/(zf-zn),  0,
+		(l+r)/(l-r), (t+b)/(b-t),  zn/(zn-zf),    1
 	};
 
 	memcpy(m, i, sizeof(float)*16);
@@ -197,10 +197,10 @@ void Matrix::orthoOffCenterLH( float l, float r, float b, float t, float zn, flo
 void Matrix::orthoRH( float w, float h, float zn, float zf) //row major?
 {
 	float i[16] = {
-		2/w,		0, 			0, 				0,
-		0, 			2/h,		0, 				0,
-		0, 			0, 			1.0f/(zn-zf),	zn/(zn-zf),
-		0,			0,			0,				1
+		2/w,   0,    0,            0,
+		0,     2/h,  0,            0,
+		0,     0,    1.0f/(zn-zf), zn/(zn-zf),
+		0,     0,    0,            1
 	};
 	
 	memcpy(m, i, sizeof(float)*16);
