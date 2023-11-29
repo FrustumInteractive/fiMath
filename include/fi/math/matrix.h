@@ -33,6 +33,7 @@ public:
 	Matrix (const float i[16]) {memcpy(m, i, sizeof(float)*16);}
 
 	void perspectiveLH( float width, float height, float znear, float zfar );
+	void perspectiveOffCenterLH( float left, float right, float bottom, float top, float znear, float zfar);
 	void perspectiveRH( float width, float height, float znear, float zfar );
 	void perspectiveFovLH( float fovY, float aspect, float znear, float zfar );
 	void perspectiveFovRH( float fovY, float aspect, float znear, float zfar );
@@ -41,8 +42,6 @@ public:
 	void orthoOffCenterLH( float left, float right, float bottom, float top, float znear, float zfar);
 	void orthoLH( float width, float height, float znear, float zfar); // (0,0) at center
 
-	void frustum(float left, float right, float bottom, float top, float near, float far); // describes a perspective matrix (projection matrix)
-	
 	void lookAtLH( const vec3& eye, const vec3& target, const vec3& up);
 	void lookAtRH( const vec3& eye, const vec3& target, const vec3& up);
 
