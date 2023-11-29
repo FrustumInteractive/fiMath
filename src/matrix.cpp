@@ -137,10 +137,10 @@ void Matrix::perspectiveFovRH( float fovY, float aspect, float zn, float zf )
 	float znmzf = zn-zf;
 	// the following looks like RM, but it's sequenced as CM
 	float i[16] = {
-		w,		0,		0,				0,
-		0,		h,		0,				0,
-		0,		0,		zf/znmzf,		-1,
-		0,		0,		zn*zf/znmzf,	0
+		w,  0,  0,            0,
+		0,  h,  0,            0,
+		0,  0,  zf/znmzf,    -1,
+		0,  0,  zn*zf/znmzf,  0
 	};
 
 	memcpy(m, i, sizeof(float)*16);
@@ -161,10 +161,10 @@ void Matrix::frustum(float left, float right, float bottom, float top, float nea
 	// transposed to column major
 
 	float i[16] = {
-		nx2/rml,	0,			0,		0,
-		0,			nx2/tmb,	0,		0,
-		A,			B,			C,		-1,
-		0,			0,			D,		0
+		nx2/rml,  0,       0,   0,
+		0,        nx2/tmb, 0,   0,
+		A,        B,       C,  -1,
+		0,        0,       D,   0
 	};
 
 	memcpy(m, i, sizeof(float)*16);
