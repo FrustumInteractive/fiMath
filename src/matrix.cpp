@@ -31,7 +31,7 @@ float Matrix::determinant()
 {
 	return m[0] * getCofactor(m[5],m[6],m[7], m[9],m[10],m[11], m[13],m[14],m[15]) -
 		m[1] * getCofactor(m[4],m[6],m[7], m[8],m[10],m[11], m[12],m[14],m[15]) +
-		m[2] * getCofactor(m[4],m[5],m[7], m[8],m[9], m[11], m[12],m[13],m[15]) - 
+		m[2] * getCofactor(m[4],m[5],m[7], m[8],m[9], m[11], m[12],m[13],m[15]) -
 		m[3] * getCofactor(m[4],m[5],m[6], m[8],m[9], m[10], m[12],m[13],m[14]);
 }
 
@@ -96,10 +96,10 @@ void Matrix::perspectiveLH( float width, float height, float znear, float zfar )
 	float zfmzn = zfar - znear;
 	float dzn = 2.0f * znear;
 
-	m[0]=dzn/width;		m[4]=0;			m[8]=0;					m[12]=0;
-	m[1]=0;				m[5]=dzn/height;	m[9]=0;					m[13]=0;
-	m[2]=0;				m[6]=0;			m[10]=zfar/zfmzn;		m[14]=1;
-	m[3]=0;				m[7]=0;			m[11]=znear*zfar/znmzf;	m[15]=0;
+	m[0]=dzn/width;  m[4]=0;          m[8]=0;                 m[12]=0;
+	m[1]=0;          m[5]=dzn/height; m[9]=0;                 m[13]=0;
+	m[2]=0;          m[6]=0;          m[10]=zfar/zfmzn;       m[14]=1;
+	m[3]=0;          m[7]=0;          m[11]=znear*zfar/znmzf; m[15]=0;
 }
 
 void Matrix::perspectiveRH( float width, float height, float znear, float zfar )
@@ -298,11 +298,11 @@ void Matrix::scale( float x, float y, float z )
 void Matrix::scale( const vec3& s )
 {
 	float i[16] =
-	{	
+	{
 		s.x,	0.0f,	0.0f,	0.0f,
 		0.0f,	s.y,	0.0f,	0.0f,
 		0.0f,	0.0f,	s.z,	0.0f,
-		0.0f,	0.0f,	0.0f,	1.0f	
+		0.0f,	0.0f,	0.0f,	1.0f
 	};
 
 	memcpy(m, i, sizeof(float)*16);

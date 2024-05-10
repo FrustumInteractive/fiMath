@@ -60,4 +60,4 @@ int main(int argc, char *argv[])
 	cout << "input matrix multiplied by its inverse is:" << endl;
 	printCM(mat1*mat2.inverse());
 }
-		
+
