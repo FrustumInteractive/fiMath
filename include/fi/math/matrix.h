@@ -65,6 +65,7 @@ public:
 
 	const float *data() const {return m;}
 	float determinant();
+	float maxScale(); // get max scale factor of all axis
 
 	Matrix inverse();
 
