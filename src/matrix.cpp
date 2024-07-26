@@ -3,6 +3,7 @@
 #include <math.h>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 using namespace std;
 using namespace FI;
@@ -38,12 +39,12 @@ float Matrix::determinant()
 float Matrix::maxScale()
 {
 	// Extract the scaling factors from the columns of the transformation matrix
-    float scaleX = sqrt(m[0] * m[0] + m[1] * m[1] + m[2] * m[2]);
-    float scaleY = sqrt(m[4] * m[4] + m[5] * m[5] + m[6] * m[6]);
-    float scaleZ = sqrt(m[8] * m[8] + m[9] * m[9] + m[10] * m[10]);
+	float scaleX = sqrt(m[0] * m[0] + m[1] * m[1] + m[2] * m[2]);
+	float scaleY = sqrt(m[4] * m[4] + m[5] * m[5] + m[6] * m[6]);
+	float scaleZ = sqrt(m[8] * m[8] + m[9] * m[9] + m[10] * m[10]);
 
-    // Return the maximum scaling factor
-    return std::max({scaleX, scaleY, scaleZ});
+	// Return the maximum scaling factor
+	return std::max({scaleX, scaleY, scaleZ});
 }
 
 void Matrix::invert()
