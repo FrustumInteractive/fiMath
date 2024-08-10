@@ -139,15 +139,26 @@ public:
 		return x * _v.x + y * _v.y + z * _v.z;
 	}
 
-	inline void normalize()
+	inline vec3 cross(const vec3& v) const
+	{
+		return {
+			y * v.z - z * v.y,
+			z * v.x - x * v.z,
+			x * v.y - y * v.x
+		};
+	}
+
+	inline vec3& normalize()
 	{
 		float ln = length();
-		if (!ln)
-			return;
-		float div = 1.0f / ln;
-		x *= div;
-		y *= div;
-		z *= div;
+		if (ln > 0.0f)
+		{
+			float div = 1.0f / ln;
+			x *= div;
+			y *= div;
+			z *= div;
+		}
+		return *this;
 	}
 
 	inline void positive()
