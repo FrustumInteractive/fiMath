@@ -104,26 +104,29 @@ void Matrix::invert()
 
 void Matrix::perspectiveLH( float width, float height, float znear, float zfar )
 {
-	float znmzf = znear - zfar;
 	float zfmzn = zfar - znear;
 	float dzn = 2.0f * znear;
 
-	m[0]=dzn/width;  m[4]=0;          m[8]=0;                 m[12]=0;
-	m[1]=0;          m[5]=dzn/height; m[9]=0;                 m[13]=0;
-	m[2]=0;          m[6]=0;          m[10]=zfar/zfmzn;       m[14]=1;
-	m[3]=0;          m[7]=0;          m[11]=znear*zfar/znmzf; m[15]=0;
+	// Column-major storage, column-vector convention (matches perspectiveFovLH)
+	m[0]=dzn/width;  m[4]=0;           m[8]=0;                 m[12]=0;
+	m[1]=0;          m[5]=dzn/height;  m[9]=0;                 m[13]=0;
+	m[2]=0;          m[6]=0;           m[10]=zfar/zfmzn;       m[14]=-znear*zfar/zfmzn;
+	m[3]=0;          m[7]=0;           m[11]=1;                m[15]=0;
 }
+
 
 void Matrix::perspectiveRH( float width, float height, float znear, float zfar )
 {
 	float znmzf = znear - zfar;
 	float dzn = 2.0f * znear;
 
-	m[0]=dzn/width;		m[4]=0;			m[8]=0;					m[12]=0;
-	m[1]=0;				m[5]=dzn/height;	m[9]=0;				m[13]=0;
-	m[2]=0;				m[6]=0;			m[10]=zfar/znmzf;		m[14]=-1;
-	m[3]=0;				m[7]=0;			m[11]=znear*zfar/znmzf;	m[15]=0;
+	// Column-major storage, column-vector convention (matches perspectiveFovRH)
+	m[0]=dzn/width;  m[4]=0;           m[8]=0;                 m[12]=0;
+	m[1]=0;          m[5]=dzn/height;  m[9]=0;                 m[13]=0;
+	m[2]=0;          m[6]=0;           m[10]=zfar/znmzf;       m[14]=znear*zfar/znmzf;
+	m[3]=0;          m[7]=0;           m[11]=-1;               m[15]=0;
 }
+
 
 void Matrix::Matrix::perspectiveFovLH( float fovY, float aspect, float znear, float zfar ) //verified CM
 {
@@ -169,17 +172,19 @@ void Matrix::perspectiveFovRH( float fovY, float aspect, float zn, float zf )
 	memcpy(m, i, sizeof(float)*16);
 }
 
-void Matrix::orthoLH( float w, float h, float zn, float zf) //row major?
+void Matrix::orthoLH( float w, float h, float zn, float zf )
 {
+	// Centered LH ortho, z in [0, 1] style (matches orthoOffCenterLH)
 	float i[16] = {
-		1/w,  0,    0,                0,
-		0,    1/h,  0,                0,
-		0,    0,   -2/(zf-zn),        zn/(zn-zf),
-		0,    0,   -(zf+zn)/(zf-zn),  1
+		2.0f/w,  0,       0,              0,
+		0,       2.0f/h,  0,              0,
+		0,       0,       1.0f/(zf-zn),   0,
+		0,       0,       zn/(zn-zf),     1
 	};
 
-	memcpy(m, i, sizeof(float)*16);;
+	memcpy(m, i, sizeof(float)*16);
 }
+
 
 void Matrix::orthoOffCenterLH( float l, float r, float b, float t, float zn, float zf)
 {
@@ -332,7 +337,9 @@ void Matrix::transform(vec3 trans, vec3 rot, vec3 scale)
 	rz.rotate(angz, vec3(0,0,1));
 	s.scale(scale);
 
-	o = s*rx*ry*rz*t;
+	// Column-vector convention (OpenGL/GLSL style): v' = M * v
+	// Apply scale, then Rx, then Ry, then Rz, then translation.
+	o = t * rz * ry * rx * s;
 	memcpy(m, o.m, sizeof(float)*16);
 }
 
@@ -473,26 +480,67 @@ bool Matrix::operator==(const Matrix& mat) const
 
 void Matrix16f::mult( float dst[16], const float a[16], const float b[16] )
 {
-	dst[0]  = a[0]*b[0]  +  a[1]*b[4]  +  a[2]*b[8]   + a[3]*b[12];
-	dst[1]  = a[0]*b[1]  +  a[1]*b[5]  +  a[2]*b[9]   + a[3]*b[13];
-	dst[2]  = a[0]*b[2]  +  a[1]*b[6]  +  a[2]*b[10]  + a[3]*b[14];
-	dst[3]  = a[0]*b[3]  +  a[1]*b[7]  +  a[2]*b[11]  + a[3]*b[15];
+	// Column-major storage, column-vector convention: dst = a * b
+	// Indexing: m[col*4 + row]
+	const bool alias = (dst == a) || (dst == b);
 
-	dst[4]  = a[4]*b[0]  +  a[5]*b[4]  +  a[6]*b[8]   + a[7]*b[12];
-	dst[5]  = a[4]*b[1]  +  a[5]*b[5]  +  a[6]*b[9]   + a[7]*b[13];
-	dst[6]  = a[4]*b[2]  +  a[5]*b[6]  +  a[6]*b[10]  + a[7]*b[14];
-	dst[7]  = a[4]*b[3]  +  a[5]*b[7]  +  a[6]*b[11]  + a[7]*b[15];
+	if (!alias)
+	{
+		// Column 0
+		dst[0]  = a[0]*b[0]  + a[4]*b[1]  + a[8]*b[2]   + a[12]*b[3];
+		dst[1]  = a[1]*b[0]  + a[5]*b[1]  + a[9]*b[2]   + a[13]*b[3];
+		dst[2]  = a[2]*b[0]  + a[6]*b[1]  + a[10]*b[2]  + a[14]*b[3];
+		dst[3]  = a[3]*b[0]  + a[7]*b[1]  + a[11]*b[2]  + a[15]*b[3];
 
-	dst[8]  = a[8]*b[0]  +  a[9]*b[4]  +  a[10]*b[8]  + a[11]*b[12];
-	dst[9]  = a[8]*b[1]  +  a[9]*b[5]  +  a[10]*b[9]  + a[11]*b[13];
-	dst[10] = a[8]*b[2]  +  a[9]*b[6]  +  a[10]*b[10] + a[11]*b[14];
-	dst[11] = a[8]*b[3]  +  a[9]*b[7]  +  a[10]*b[11] + a[11]*b[15];
+		// Column 1
+		dst[4]  = a[0]*b[4]  + a[4]*b[5]  + a[8]*b[6]   + a[12]*b[7];
+		dst[5]  = a[1]*b[4]  + a[5]*b[5]  + a[9]*b[6]   + a[13]*b[7];
+		dst[6]  = a[2]*b[4]  + a[6]*b[5]  + a[10]*b[6]  + a[14]*b[7];
+		dst[7]  = a[3]*b[4]  + a[7]*b[5]  + a[11]*b[6]  + a[15]*b[7];
 
-	dst[12] = a[12]*b[0] +  a[13]*b[4] +  a[14]*b[8]  + a[15]*b[12];
-	dst[13] = a[12]*b[1] +  a[13]*b[5] +  a[14]*b[9]  + a[15]*b[13];
-	dst[14] = a[12]*b[2] +  a[13]*b[6] +  a[14]*b[10] + a[15]*b[14];
-	dst[15] = a[12]*b[3] +  a[13]*b[7] +  a[14]*b[11] + a[15]*b[15];
+		// Column 2
+		dst[8]  = a[0]*b[8]  + a[4]*b[9]  + a[8]*b[10]  + a[12]*b[11];
+		dst[9]  = a[1]*b[8]  + a[5]*b[9]  + a[9]*b[10]  + a[13]*b[11];
+		dst[10] = a[2]*b[8]  + a[6]*b[9]  + a[10]*b[10] + a[14]*b[11];
+		dst[11] = a[3]*b[8]  + a[7]*b[9]  + a[11]*b[10] + a[15]*b[11];
+
+		// Column 3
+		dst[12] = a[0]*b[12] + a[4]*b[13] + a[8]*b[14]  + a[12]*b[15];
+		dst[13] = a[1]*b[12] + a[5]*b[13] + a[9]*b[14]  + a[13]*b[15];
+		dst[14] = a[2]*b[12] + a[6]*b[13] + a[10]*b[14] + a[14]*b[15];
+		dst[15] = a[3]*b[12] + a[7]*b[13] + a[11]*b[14] + a[15]*b[15];
+		return;
+	}
+
+	float out[16];
+
+	// Column 0
+	out[0]  = a[0]*b[0]  + a[4]*b[1]  + a[8]*b[2]   + a[12]*b[3];
+	out[1]  = a[1]*b[0]  + a[5]*b[1]  + a[9]*b[2]   + a[13]*b[3];
+	out[2]  = a[2]*b[0]  + a[6]*b[1]  + a[10]*b[2]  + a[14]*b[3];
+	out[3]  = a[3]*b[0]  + a[7]*b[1]  + a[11]*b[2]  + a[15]*b[3];
+
+	// Column 1
+	out[4]  = a[0]*b[4]  + a[4]*b[5]  + a[8]*b[6]   + a[12]*b[7];
+	out[5]  = a[1]*b[4]  + a[5]*b[5]  + a[9]*b[6]   + a[13]*b[7];
+	out[6]  = a[2]*b[4]  + a[6]*b[5]  + a[10]*b[6]  + a[14]*b[7];
+	out[7]  = a[3]*b[4]  + a[7]*b[5]  + a[11]*b[6]  + a[15]*b[7];
+
+	// Column 2
+	out[8]  = a[0]*b[8]  + a[4]*b[9]  + a[8]*b[10]  + a[12]*b[11];
+	out[9]  = a[1]*b[8]  + a[5]*b[9]  + a[9]*b[10]  + a[13]*b[11];
+	out[10] = a[2]*b[8]  + a[6]*b[9]  + a[10]*b[10] + a[14]*b[11];
+	out[11] = a[3]*b[8]  + a[7]*b[9]  + a[11]*b[10] + a[15]*b[11];
+
+	// Column 3
+	out[12] = a[0]*b[12] + a[4]*b[13] + a[8]*b[14]  + a[12]*b[15];
+	out[13] = a[1]*b[12] + a[5]*b[13] + a[9]*b[14]  + a[13]*b[15];
+	out[14] = a[2]*b[12] + a[6]*b[13] + a[10]*b[14] + a[14]*b[15];
+	out[15] = a[3]*b[12] + a[7]*b[13] + a[11]*b[14] + a[15]*b[15];
+
+	memcpy(dst, out, sizeof(out));
 }
+
 
 void Matrix16f::mult(float *dst, const vec3 &a, const float *b)
 {
