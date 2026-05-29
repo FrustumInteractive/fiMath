@@ -1,6 +1,8 @@
 #ifndef _FRUSTUM_H
 #define _FRUSTUM_H
 
+#include "fi/math/vec3.h"
+
 namespace FI {
 namespace MATH {
 
@@ -24,6 +26,8 @@ public:
 
 	// This takes the center and half the length of the cube.
 	bool cubeInFrustum( float x, float y, float z, float size );
+	bool aabbInFrustum(const vec3 &center, const vec3 &halfExtent, bool testNearPlane = true);
+	bool obbInFrustum(const vec3 &center, const vec3 axis[3], const vec3 &halfExtent);
 
 private:
 

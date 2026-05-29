@@ -314,5 +314,52 @@ bool Frustum::cubeInFrustum( float x, float y, float z, float size )
 	return true;
 }
 
+bool Frustum::aabbInFrustum(const vec3 &center, const vec3 &halfExtent, bool testNearPlane)
+{
+	for (unsigned char i = 0; i < 6; i++)
+	{
+		if (!testNearPlane && i == FRONT)
+		{
+			continue;
+		}
+		const float dist =
+			m_frustum[i][A] * center.x +
+			m_frustum[i][B] * center.y +
+			m_frustum[i][C] * center.z +
+			m_frustum[i][D];
+		const float radius =
+			fabsf(m_frustum[i][A]) * halfExtent.x +
+			fabsf(m_frustum[i][B]) * halfExtent.y +
+			fabsf(m_frustum[i][C]) * halfExtent.z;
+		if (dist < -radius)
+		{
+			return false;
+		}
+	}
 
+	return true;
+}
+
+bool Frustum::obbInFrustum(const vec3 &center, const vec3 axis[3], const vec3 &halfExtent)
+{
+	for (unsigned char i = 0; i < 6; i++)
+	{
+		const vec3 normal(m_frustum[i][A], m_frustum[i][B], m_frustum[i][C]);
+		const float dist =
+			normal.x * center.x +
+			normal.y * center.y +
+			normal.z * center.z +
+			m_frustum[i][D];
+		const float radius =
+			fabsf(normal.dot(axis[0])) * halfExtent.x +
+			fabsf(normal.dot(axis[1])) * halfExtent.y +
+			fabsf(normal.dot(axis[2])) * halfExtent.z;
+		if (dist < -radius)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
 
