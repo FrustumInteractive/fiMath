@@ -12,7 +12,7 @@ using namespace MATH;
 // COLUMN MAJOR
 
 //Helpers
-const float EPSILON = 0.00001f;
+const float EPSILON = 0.000000000001f;
 const float DTOR = 0.0174532925f;
 
 // compute cofactor of 3x3 minor matrix without sign
