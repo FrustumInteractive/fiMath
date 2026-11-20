@@ -249,10 +249,10 @@ void Matrix::lookAtRH( const vec3& eye, const vec3& target, const vec3& up) //ve
 	vec3 yaxis = cross(zaxis, xaxis);
 
 	float i[16] = {
-		-xaxis.x,			yaxis.x,			-zaxis.x,			0,
-		-xaxis.y,			yaxis.y,			-zaxis.y,			0,
-		-xaxis.z,			yaxis.z,			-zaxis.z,			0,
-		xaxis.dot(eye),		-yaxis.dot(eye),	-zaxis.dot(eye),	1
+		xaxis.x,			yaxis.x,			zaxis.x,			0,
+		xaxis.y,			yaxis.y,			zaxis.y,			0,
+		xaxis.z,			yaxis.z,			zaxis.z,			0,
+		-xaxis.dot(eye),		-yaxis.dot(eye),	-zaxis.dot(eye),	1
 	};
 
 	memcpy(m, i, sizeof(float)*16);
